@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #6ca6cd;
+            color: white;
+        }
+        input[type="number"] {
+            width: 80px;
+            padding: 5px;
+        }
+        .result {
+            font-weight: bold;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #6ca6cd;
+            color: white;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #5a8ba4;
+        }
+        .total-box, .profit-box {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+        .total-box {
+            font-size: 16px;
+            padding: 8px;
+        }
+        .profit-box {
+            color: green;
+            font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            input[type="number"] {
+                width: 60px;
+            }
+            .btn, .total-box, .profit-box {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .total-box {
+                font-size: 14px;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Fixed Price 1</th>
+                <th>Fixed Price 2</th>
+                <th>Quantity</th>
+                <th>Live Calculation 1</th>
+                <th>Live Calculation 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>SAGAR</td>
+                <td class="price1">724.20</td>
+                <td class="price2">744</td>
+                <td><input type="number" class="quantity" value="0" min="0"></td>
+                <td class="calc1 result">0.00</td>
+                <td class="calc2 result">0.00</td>
+            </tr>
+            <tr>
+                <td>GOLD</td>
+                <td class="price1">795</td>
+                <td class="price2">816</td>
+                <td><input type="number" class="quantity" value="0" min="0"></td>
+                <td class="calc1 result">0.00</td>
+                <td class="calc2 result">0.00</td>
+            </tr>
+            <tr>
+                <td>CHAAS</td>
+                <td class="price1">358.80</td>
+                <td class="price2">390</td>
+                <td><input type="number" class="quantity" value="0" min="0"></td>
+                <td class="calc1 result">0.00</td>
+                <td class="calc2 result">0.00</td>
+            </tr>
+            <tr>
+                <td>6 LTR</td>
+                <td class="price1">783</td>
+                <td class="price2">804</td>
+                <td><input type="number" class="quantity" value="0" min="0"></td>
+                <td class="calc1 result">0.00</td>
+                <td class="calc2 result">0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td><input type="text" id="total-col5" class="total-box" readonly></td>
+                <td><input type="text" id="total-col6" class="total-box" readonly></td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn" onclick="calculateTotal()">Calculate Total</button>
+    <button class="btn" onclick="calculateProfit()">Calculate Profit</button>
+    <button class="btn" onclick="clearFields()">Clear</button>
+    <input type="text" id="profit-box" class="profit-box" readonly>
+
+    <script>
+        const quantities = document.querySelectorAll('.quantity');
+        const prices1 = document.querySelectorAll('.price1');
+        const prices2 = document.querySelectorAll('.price2');
+        const calc1Results = document.querySelectorAll('.calc1');
+        const calc2Results = document.querySelectorAll('.calc2');
+        const totalCol5 = document.getElementById('total-col5');
+        const totalCol6 = document.getElementById('total-col6');
+        const profitBox = document.getElementById('profit-box');
+
+        quantities.forEach((quantity, index) => {
+            quantity.addEventListener('input', () => {
+                const qty = parseFloat(quantity.value) || 0;
+                const price1 = parseFloat(prices1[index].textContent);
+                const price2 = parseFloat(prices2[index].textContent);
+
+                calc1Results[index].textContent = (price1 * qty).toFixed(2);
+                calc2Results[index].textContent = (price2 * qty).toFixed(2);
+            });
+        });
+
+        function calculateTotal() {
+            let total1 = 0;
+            let total2 = 0;
+            calc1Results.forEach(result => total1 += parseFloat(result.textContent));
+            calc2Results.forEach(result => total2 += parseFloat(result.textContent));
+
+            totalCol5.value = total1.toFixed(2);
+            totalCol6.value = total2.toFixed(2);
+        }
+
+        function calculateProfit() {
+            let total1 = 0;
+            let total2 = 0;
+            calc1Results.forEach(result => total1 += parseFloat(result.textContent));
+            calc2Results.forEach(result => total2 += parseFloat(result.textContent));
+
+            const profit = total2 - total1;
+            profitBox.value = profit.toFixed(2);
+            profitBox.style.color = 'green';
+        }
+
+        function clearFields() {
+            quantities.forEach(quantity => quantity.value = 0);
+            calc1Results.forEach(result => result.textContent = '0.00');
+            calc2Results.forEach(result => result.textContent = '0.00');
+            totalCol5.value = '';
+            totalCol6.value = '';
+            profitBox.value = '';
+        }
+    </script>
+</body>
+</html>
